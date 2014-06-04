@@ -1,0 +1,24 @@
+##H2 export sql
+java org.h2.tools.Script -url jdbc:h2:~/test;AUTO_SERVER=TRUE -user sa -script db.sql
+注：
+1.rollbackTag是指rollback到该tag对应的记录之前（包括本tag）,该tag之后的changeSet全部删除
+2.<tagDatabase tag="tag" />标签其实是个版本分界点，并非把标签之前的全部changeSet都记录tag（也无必要，仅记录一个分界位置就行）
+3.mvn properties:read-project-properties liquibase:rollbackSQL必须在compile后（即已生成target/classes下文件）后才会执行成功
+4.如果使用maven插件执行changelog.xml时（即命令：mvn liquibase:update）,此时使用mvn liquibase:rollback时无问题，可以回滚，不会出现checkMD5Num无效的问题
+但如果使用spring bean 执行changelog.xml时，在changelog.xml里的changeSet标签中必须使用runOnChange="true"，否则会出现checkMD5Num无效的问题
+
+## run mvn in cmd
+mvn properties:read-project-properties liquibase:tag -Dliquibase.tag=1.1
+mvn properties:read-project-properties liquibase:rollback -Dliquibase.rollbackTag=1.0
+mvn properties:read-project-properties liquibase:rollbackSQL -Dliquibase.rollbackTag= -Dliquibase.logging="debug"
+mvnDebug properties:read-project-properties liquibase:rollbackSQL -Dliquibase.rollbackTag= -Dliquibase.logging="debug"
+mvn properties:read-project-properties liquibase:rollback -Dliquibase.rollbackCount=1
+
+## run liquibase in cmd
+#h2
+liquibase --driver=org.h2.Driver --changeLogFile=h2.xml --url="jdbc:h2:~/test;AUTO_SERVER=TRUE" --username=sa generateChangeLog
+
+#pg
+liquibase --driver=org.postgresql.Driver --defaultSchemaName=public  --changeLogFile=D:\reed\tools\apache-tomcat-6.0.10\webapps\crm\WEB-INF\classes\db\liquibase\changelog.xml --url="jdbc:postgresql://*:5432/dbname" --username=* --password=* --logLevel=debug rollbackSQL 2.22
+
+liquibase --driver=org.postgresql.Driver --defaultSchemaName=public --outputDefaultSchema=true  --changeLogFile=public.xml --url="jdbc:postgresql://*:5432/dbname" --username=* --password=* generateChangeLog

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<!-- v2.22 -->
+	<changeSet id="2.22_1" author="reed" runOnChange="true">
+		<preConditions onFail="MARK_RAN" onSqlOutput="TEST">
+			<!-- <sqlCheck expectedResult="0">select</sqlCheck> -->
+			<not>
+				<tableExists schemaName="public" tableName="data_test_array" />
+			</not>
+		</preConditions>
+		<comment>test</comment>
+		<createTable tableName="data_test_array" schemaName="public">
+			<column name="id" type="int"></column>
+			<column name="test" type="Array"></column>
+		</createTable>
+		<rollback>
+			<dropTable tableName="data_test_array" schemaName="public" />
+		</rollback>
+	</changeSet>
+	<changeSet author="reed" id="2.22_2" runOnChange="true">
+		<preConditions onFail="MARK_RAN" onSqlOutput="TEST">
+			<!-- <sqlCheck expectedResult="0">select</sqlCheck> -->
+			<not>
+				<columnExists schemaName="public" tableName="appinfo_1"
+					columnName="test" />
+			</not>
+		</preConditions>
+		<comment>test</comment>
+		<addColumn tableName="appinfo_1" schemaName="crm">
+			<column name="test" type="Array"></column>
+		</addColumn>
+		<addColumn tableName="appinfo_2" schemaName="crm">
+			<column name="test" type="Array"></column>
+		</addColumn>
+		<sql>
+			create view crm.appinfo as select * from crm.appinfo_0 union all
+			select *
+			from crm.appinfo_1 union all select * from crm.appinfo_2;
+		</sql>
+	</changeSet>
+
+	<changeSet id="2.22_0" author="reed">
+		<tagDatabase tag="2.22" />
+	</changeSet>
+
+	<!-- <changeSet id="2.22_2" author="reed"> <addPrimaryKey tableName="data_test_array" 
+		columnNames="id" schemaName="public" /> </changeSet> -->
+	<!-- <changeSet id="2.22_3" author="reed"> <addDefaultValue tableName="data_test_array" 
+		columnName="test" schemaName="public" defaultValue="{1}" /> </changeSet> -->
+	<!-- <changeSet id="2.22_4" author="reed"> <preConditions> <sqlCheck expectedResult="0">select 
+		count(*) from data_test_array where id in (1) </sqlCheck> </preConditions> 
+		<sql>insert into data_test_array values(1,'{1,2}')</sql> <rollback> <delete 
+		tableName="data_test_array" schemaName="public"> <where>id in (1)</where> 
+		</delete> </rollback> </changeSet> -->
+</databaseChangeLog>

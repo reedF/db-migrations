@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+	<changeSet author="reed" id="0" runOnChange="true">
+		<preConditions onFail="MARK_RAN" onSqlOutput="TEST">
+		
+		</preConditions>
+		<sql>
+			create schema IF NOT EXISTS crm;
+		</sql>
+	</changeSet>
+	<changeSet id="1.0_0" author="reed">
+		<tagDatabase tag="1.0" />
+	</changeSet>
+	<include file="db/liquibase/v/v2.22.xml"/>
+	<!-- <includeAll path="db/liquibase/v" /> -->
+</databaseChangeLog>
