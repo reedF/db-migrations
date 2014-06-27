@@ -29,7 +29,7 @@ import com.reed.crm.mapper.AppInfoMapper;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:db-test.xml")
-// @TransactionConfiguration(transactionManager="crmTxm",defaultRollback = true)
+// @TransactionConfiguration(transactionManager="txm",defaultRollback = true)
 // @Transactional
 public class DbTest {
 
@@ -74,7 +74,7 @@ public class DbTest {
 	public final void testArray() {
 		Long[] a = { 1l, 2l };
 		s.setAppType((short) 3);
-		//s.setTest(a);
+		// s.setTest(a);
 		int r = appInfoMapper.insertSelective(s);
 		Assert.assertEquals(1, r);
 	}

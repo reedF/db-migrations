@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bean="http://www.springframework.org/schema/beans"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+     http://www.springframework.org/schema/context
+     http://www.springframework.org/schema/context/spring-context-2.5.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+     http://www.springframework.org/schema/jdbc  
+     http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd 
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-lazy-init="true">
+	
+	<!-- scan package and aopproxy -->
+	<context:annotation-config/>
+	<context:component-scan base-package="com.reed.aop.datasource.dynamic"/> 	 
+	<aop:aspectj-autoproxy />
+	
+	<bean id="parent_DataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driverClassName}" />
+		<property name="maxActive" value="50" />
+		<property name="initialSize" value="5" />
+		<property name="minIdle" value="5" />
+		<property name="maxIdle" value="10" />
+		<property name="defaultAutoCommit" value="true" />
+		<property name="removeAbandoned" value="${db.removeAbandoned?true}" />
+		<property name="removeAbandonedTimeout" value="${db.removeAbandonedTimeout?10}" />
+		<property name="logAbandoned" value="${db.logAbandoned?true}" />
+		<property name="validationQuery" value="${db.validationQuery?SELECT 1}" />
+		<property name="testOnBorrow" value="${db.testOnBorrow?true}" />
+		<property name="testOnReturn" value="${db.testOnReturn?false}" />
+		<property name="testWhileIdle" value="${db.testWhileIdle?true}" />
+		<property name="timeBetweenEvictionRunsMillis"
+			value="${db.timeBetweenEvictionRunsMillis?600000}" />
+		<property name="minEvictableIdleTimeMillis" value="${db.minEvictableIdleTimeMillis?900000}" />
+	</bean>
+	
+	<!-- master datasource -->
+	<bean id="master_DataSource" parent="parent_DataSource">
+		<property name="url"
+			value="${db.ip}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+	</bean>
+	<!-- slave datasource -->
+	<bean id="slave_DataSource" parent="parent_DataSource">
+		<property name="url"
+			value="${db.ip}" />
+		<property name="username" value="${db.slave.username}" />
+		<property name="password" value="${db.slave.password}" />
+	</bean>
+
+	<bean id="dynamic_DataSource" class="com.reed.aop.datasource.dynamic.DynamicDataSource">
+		<property name="targetDataSources">
+			<map>
+				<entry key="master" value-ref="master_DataSource" />
+				<entry key="slave" value-ref="slave_DataSource" />
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="master_DataSource" />
+	</bean>
+	
+	<!-- tx  ds setting master-->
+	<tx:annotation-driven transaction-manager="txm" />
+	<bean id="txm"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="master_DataSource" />
+	</bean>
+
+</beans>

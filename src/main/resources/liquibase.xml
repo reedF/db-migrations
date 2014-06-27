@@ -10,7 +10,7 @@
 	default-lazy-init="true">
 
 	<bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase" lazy-init="false">
-		<property name="dataSource" ref="dataSource" />
+		<property name="dataSource" ref="dynamic_DataSource" />
 		<property name="changeLog" value="classpath:db/liquibase/changelog.xml" />
 	</bean>
 
@@ -22,7 +22,7 @@
 
 	<!-- define the SqlSessionFactory -->
 	<bean id="crmSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
+		<property name="dataSource" ref="dynamic_DataSource" />
 		<property name="typeAliasesPackage" value="com.reed.crm.domain" />
 		<!-- sharding set -->
 		<property name="configLocation" value="classpath:shard/mybatis_config.xml" />

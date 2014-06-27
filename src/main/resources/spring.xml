@@ -28,7 +28,8 @@
 		<property name="order" value="1" />
 		<property name="valueSeparator" value="?" />
 	</bean>
-	
+	<!-- ds -->
+	<import resource="datasource-dynamic.xml"/>
 	<!-- flyway -->
 <!-- 	<import resource="classpath:flyway.xml" />	 -->
 	<!-- liquibase -->
