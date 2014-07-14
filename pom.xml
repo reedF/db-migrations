@@ -1,10 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<!-- 	<parent>
-		<artifactId>maven-parent</artifactId>
-		<groupId>com.lashou</groupId>
-		<version>1.4</version>
-	</parent> -->
+	<!-- <parent> <artifactId>maven-parent</artifactId> <groupId>com.lashou</groupId> 
+		<version>1.4</version> </parent> -->
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.reed.test</groupId>
 	<artifactId>db-migrations</artifactId>
@@ -140,10 +137,19 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<overwrite>true</overwrite>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${target.jdk}</source>
+					<target>${target.jdk}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
 			</plugin>
 			<!-- liquibase -->
 			<plugin>
@@ -194,4 +200,8 @@
 			</plugin>
 		</plugins>
 	</build>
+	<properties>
+		<target.jdk>1.6</target.jdk>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 </project>
