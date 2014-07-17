@@ -5,24 +5,20 @@ package test;
  * Copyright (c) 2013 by lashou.com
  */
 
-import java.sql.Array;
-import java.util.Arrays;
-
-import org.h2.jdbc.JdbcArray;
-import org.h2.util.IntArray;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.postgresql.jdbc4.Jdbc4Array;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.reed.crm.domain.AppInfo;
 import com.reed.crm.domain.AppInfoExample;
 import com.reed.crm.mapper.AppInfoMapper;
+import com.reed.db.sharding.AppliactionContextHelper;
 
 /**
  * @author reed
@@ -77,5 +73,13 @@ public class DbTest {
 		// s.setTest(a);
 		int r = appInfoMapper.insertSelective(s);
 		Assert.assertEquals(1, r);
+	}
+
+	@Test
+	public final void testApplicationContext() {
+		ApplicationContext ctx = AppliactionContextHelper
+				.getApplicationContext();
+		Assert.assertNotNull(ctx);
+
 	}
 }
