@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,12 +23,14 @@ import org.springframework.stereotype.Component;
  *  解决：
  *  1.配置切点为service，保证在开启事务时已确定了正确的session连接
  *  2.更改事务级别，保证内嵌事务每次重新获取连接
- * 
+ * 	3.配置AOP order,使DynamicDsAOP在spring tx:annotation-driven前执行，保证在使用事务时数据源切换的正确
  * @author reed
  * 
  */
 @Component
 @Aspect
+//配置AOP order,使DynamicDsAOP在spring tx:annotation-driven前执行，保证在使用事务时数据源切换的正确
+@Order(Integer.MAX_VALUE - 1)
 public class DynamicDsAOP {
 
 	private Logger logger = LoggerFactory.getLogger(DynamicDsAOP.class);
